@@ -31,19 +31,19 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <form onSubmit={onSubmit} className="bg-white w-full max-w-sm rounded shadow p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-center">Admin Login</h1>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950">
+      <form onSubmit={onSubmit} className="card w-full max-w-sm space-y-5" aria-labelledby="loginTitle">
+        <h1 id="loginTitle" className="text-2xl font-bold text-center">Admin Login</h1>
+        {error && <div className="text-red-600 text-sm" role="alert">{error}</div>}
         <div>
-          <label className="block text-sm mb-1">Username</label>
-          <input value={username} onChange={(e)=>setUsername(e.target.value)} className="w-full border rounded px-3 py-2" />
+          <label htmlFor="username" className="block text-sm mb-1">Username</label>
+          <input id="username" value={username} onChange={(e)=>setUsername(e.target.value)} className="input-field" autoComplete="username" />
         </div>
         <div>
-          <label className="block text-sm mb-1">Password</label>
-          <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="w-full border rounded px-3 py-2" />
+          <label htmlFor="password" className="block text-sm mb-1">Password</label>
+          <input id="password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="input-field" autoComplete="current-password" />
         </div>
-        <button disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded py-2 font-semibold">
+        <button disabled={loading} className="btn btn-primary w-full disabled:opacity-70">
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>

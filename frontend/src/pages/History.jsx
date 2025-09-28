@@ -8,7 +8,7 @@ const History = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/quotations');
+        const res = await fetch('/api/quotations?paid=true');
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to fetch');
         setRows(data);
@@ -25,7 +25,7 @@ const History = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Bills History</h2>
+      <h2 className="text-2xl font-bold mb-4">Paid Bills History</h2>
       <div className="overflow-auto border rounded">
         <table className="w-full">
           <thead>
@@ -34,6 +34,7 @@ const History = () => {
               <th className="text-left p-2">Brand</th>
               <th className="text-left p-2">Total</th>
               <th className="text-left p-2">Created At</th>
+              <th className="text-left p-2">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -43,6 +44,13 @@ const History = () => {
                 <td className="p-2">{q.brand}</td>
                 <td className="p-2">${q.total?.toFixed?.(2) || q.total}</td>
                 <td className="p-2">{new Date(q.createdAt || q.date).toLocaleString()}</td>
+                <td className="p-2">
+                  {q.paid ? (
+                    <span className="inline-block px-2 py-0.5 text-xs rounded bg-green-100 text-green-800">Paid</span>
+                  ) : (
+                    <span className="inline-block px-2 py-0.5 text-xs rounded bg-yellow-100 text-yellow-800">Unpaid</span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

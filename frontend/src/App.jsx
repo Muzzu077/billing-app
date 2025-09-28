@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BRANDS } from './constants/brands.js';
 import { useAuth } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx';
+import Logout from './pages/Logout.jsx';
+import Save from './pages/Save.jsx';
 import { useThemeMode } from './context/ThemeContext.jsx';
+import { Toaster } from 'react-hot-toast';
 import InvoiceForm from './components/InvoiceForm';
 import InvoicePreview from './components/InvoicePreview';
 import './index.css';
@@ -10,7 +13,52 @@ import './index.css';
 function App() {
   const { isAuthenticated, admin } = useAuth();
   const { theme, toggle } = useThemeMode();
-  const defaultBrand = BRANDS.find(b => b.key === 'havells') || BRANDS[0];
+  // Default brand key aligned with constants ("havels" currently used in list)
+  const defaultBrand = BRANDS.find(b => b.key === 'havels') || BRANDS[0];
+  const [route, setRoute] = useState(() => window.location.hash.replace('#', '') || '/');
+
+  useEffect(() => {
+    const onHashChange = () => setRoute(window.location.hash.replace('#', '') || '/');
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  // If a quotation was chosen from History for editing, load it into the form
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('edit_quotation');
+      if (!raw) return;
+      const q = JSON.parse(raw);
+      // Attempt to find brand config by name (case-insensitive)
+      const brandEntry = BRANDS.find(b => (b.name || '').toLowerCase() === (q.brand || '').toLowerCase());
+      const next = {
+        companyName: q.brand || invoiceData.companyName,
+        brandKey: brandEntry?.key || invoiceData.brandKey,
+        companyLogo: brandEntry?.logo || invoiceData.companyLogo,
+        brandLogo: brandEntry?.logo || invoiceData.brandLogo,
+        companyAddress: invoiceData.companyAddress,
+        clientName: q.customerName || '',
+        clientAddress: q.customerAddress || '',
+        clientPhone: q.customerPhone || '',
+        invoiceDate: q.date ? new Date(q.date).toISOString().split('T')[0] : invoiceData.invoiceDate,
+        invoiceNumber: q.invoiceNumber || invoiceData.invoiceNumber,
+        items: Array.isArray(q.products) ? q.products.map(p => ({
+          description: p.description,
+          quantity: Number(p.qty || p.quantity || 1),
+          listPrice: Number(p.listPrice || 0),
+          coilPrice: Number(p.coilPrice || p.unitPrice || 0),
+        })) : invoiceData.items,
+        taxRate: 0,
+      };
+      setInvoiceData(next);
+    } catch (e) {
+      console.warn('Failed to load edit_quotation:', e);
+    } finally {
+      // Clear so it doesn't override subsequent edits
+      localStorage.removeItem('edit_quotation');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route]);
   const [invoiceData, setInvoiceData] = useState({
     companyName: defaultBrand?.name || "Havells",
     companyLogo: defaultBrand?.logo,
@@ -40,16 +88,28 @@ function App() {
   }, [invoiceData.items, admin]);
 
   return (
-    <div className={"min-h-screen p-8 " + (theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-900')}>
+    <div className={"min-h-screen p-6 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 " + (theme === 'dark' ? 'text-gray-100' : 'text-gray-900')}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-4xl font-bold">Invoice Generator</h1>
-          <button onClick={toggle} className="px-3 py-2 rounded border">
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-          </button>
+        <Toaster position="top-right" />
+        <div className="card mb-6">
+          <div className="card-header">
+            <h1 className="text-2xl md:text-3xl font-bold">Invoice Generator</h1>
+            <div className="flex items-center gap-3">
+              {isAuthenticated && (
+                <a href="#/logout" className="btn btn-outline">Logout</a>
+              )}
+              <button onClick={toggle} className="btn btn-outline">
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </button>
+            </div>
+          </div>
         </div>
-        {!isAuthenticated ? (
+        {route === '/logout' ? (
+          <Logout />
+        ) : !isAuthenticated ? (
           <Login />
+        ) : route === '/save' ? (
+          <Save />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <InvoiceForm invoiceData={invoiceData} setInvoiceData={setInvoiceData} />

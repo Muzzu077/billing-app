@@ -16,6 +16,7 @@ const quotationSchema = new mongoose.Schema({
   subtotal: { type: Number, required: true },
   gst: { type: Number, required: true },
   total: { type: Number, required: true },
+  paid: { type: Boolean, default: false },
   terms: {
     taxes: { type: String, default: "Including taxes @18%" },
     validity: { type: String, default: "Validity only 3 days" },

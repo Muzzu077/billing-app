@@ -29,8 +29,8 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8">
-      <h2 className="text-2xl font-bold mb-6">Invoice Details</h2>
+    <div className="card">
+      <h2 className="section-title mb-6">Invoice Details</h2>
 
       {/* Brand Selection */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 items-end">
@@ -61,7 +61,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
         {invoiceData.companyLogo && (
           <div className="flex justify-start md:justify-end">
             {/* Preview of selected brand logo */}
-            <img src={invoiceData.companyLogo} alt="brand" className="h-12 object-contain" />
+            <img src={invoiceData.companyLogo} alt="brand" className="h-12 object-contain drop-shadow-sm" />
           </div>
         )}
       </div>
@@ -111,7 +111,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
 
       {/* Items Table */}
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-4">Invoice Items</h3>
+        <h3 className="section-title mb-4">Invoice Items</h3>
         <table className="w-full">
           <thead>
             <tr>
@@ -165,7 +165,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
                 <td>
                   <button
                     onClick={() => removeItem(index)}
-                    className="text-red-500 hover:text-red-700 font-bold"
+                    className="btn btn-outline text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     Remove
                   </button>
@@ -176,7 +176,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
         </table>
         <button
           onClick={addItem}
-          className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          className="mt-4 btn btn-primary"
         >
           Add Item
         </button>
