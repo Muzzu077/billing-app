@@ -65,9 +65,9 @@ function App() {
     brandLogo: defaultBrand?.logo,
     brandKey: defaultBrand?.key,
     companyAddress: "123 Industrial Area, Hyderabad",
-    clientName: "John Doe",
-    clientAddress: "456 Residential St, Bangalore",
-    clientPhone: "9876543210",
+    clientName: "",
+    clientAddress: "",
+    clientPhone: "",
     invoiceDate: new Date().toISOString().split('T')[0],
     invoiceNumber: `INV-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-001`,
     items: [
@@ -88,18 +88,18 @@ function App() {
   }, [invoiceData.items, admin]);
 
   return (
-    <div className={"min-h-screen p-6 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 " + (theme === 'dark' ? 'text-gray-100' : 'text-gray-900')}>
+    <div className={"min-h-screen p-3 sm:p-6 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 " + (theme === 'dark' ? 'text-gray-100' : 'text-gray-900')}>
       <div className="max-w-7xl mx-auto">
         <Toaster position="top-right" />
-        <div className="card mb-6">
+        <div className="card mb-4 sm:mb-6">
           <div className="card-header">
-            <h1 className="text-2xl md:text-3xl font-bold">Invoice Generator</h1>
-            <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Invoice Generator</h1>
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
               {isAuthenticated && (
-                <a href="#/logout" className="btn btn-outline">Logout</a>
+                <a href="#/logout" className="btn btn-outline text-xs sm:text-sm">Logout</a>
               )}
-              <button onClick={toggle} className="btn btn-outline">
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              <button onClick={toggle} className="btn btn-outline text-xs sm:text-sm">
+                {theme === 'dark' ? 'Light' : 'Dark'}
               </button>
             </div>
           </div>
@@ -111,7 +111,7 @@ function App() {
         ) : route === '/save' ? (
           <Save />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             <InvoiceForm invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
             <InvoicePreview invoiceData={{ ...invoiceData, items: effectiveItems }} />
           </div>

@@ -5,6 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    allowedHosts: [
+      'localhost',
+      '.ngrok-free.dev',
+      'melva-clausal-marla.ngrok-free.dev'
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:5000',

@@ -31,9 +31,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950">
-      <form onSubmit={onSubmit} className="card w-full max-w-sm space-y-5" aria-labelledby="loginTitle">
-        <h1 id="loginTitle" className="text-2xl font-bold text-center">Admin Login</h1>
+    <div className="min-h-screen flex items-center justify-center p-3 sm:p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950">
+      <form onSubmit={onSubmit} className="card w-full max-w-sm space-y-4 sm:space-y-5" aria-labelledby="loginTitle">
+        <h1 id="loginTitle" className="text-xl sm:text-2xl font-bold text-center">Admin Login</h1>
         {error && <div className="text-red-600 text-sm" role="alert">{error}</div>}
         <div>
           <label htmlFor="username" className="block text-sm mb-1">Username</label>
