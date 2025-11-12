@@ -15,7 +15,7 @@ PORT=5000
 NODE_ENV=development 
 
 # Optional: JWT secret (set in production)
-JWT_SECRET=dev_secret
+JWT_SECRET=0f0b29cfe4996e5de4246d67c20923ba1b4498e5ac2d8787f7d93c6a
 
 # Optional: Admin reset defaults (used by scripts/setupAdmin.js if CLI args not provided)
 # ADMIN_USERNAME=admin

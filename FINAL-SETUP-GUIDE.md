@@ -44,9 +44,9 @@ After running the SQL script, you should see a success message:
 
 1. Commit your changes and push to GitHub/GitLab/Bitbucket.
 2. Add these environment variables in your Vercel project:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `JWT_SECRET`
+   - `SUPABASE_URL=https://jqmfzcvbjgmjyjgptydv.supabase.co`
+   - `SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTQyMDUsImV4cCI6MjA3NjkzMDIwNX0.75WDmjz6DBALdshXtWlbLwyJof3DQeGTPlu2Kz5ks_8`
+   - `JWT_SECRET=0f0b29cfe4996e5de4246d67c20923ba1b4498e5ac2d8787f7d93c6a`
    - `FRONTEND_URL` (optional; use your deployed site url)
 3. Deploy—Vercel uses `vercel.json` to build the frontend and expose `/api/*`.
 
