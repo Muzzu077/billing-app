@@ -4,17 +4,14 @@
   "version": "1.0.0",
   "description": "Electrical Business Quotation Generator with Supabase Backend",
   "main": "index.js",
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "npm run dev --workspace backend",
-    "client": "npm run dev --workspace frontend",
-    "build": "npm run build --workspace frontend",
-    "test-connection": "npm run test-connection --workspace backend",
-    "test-bill-saving": "npm run test-bill-saving --workspace backend"
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "test-connection": "cd backend && npm run test-connection",
+    "test-bill-saving": "cd backend && npm run test-bill-saving"
   },
   "keywords": [
     "quotation",
@@ -25,6 +22,17 @@
   ],
   "author": "Your Name",
   "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "axios": "^1.6.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }

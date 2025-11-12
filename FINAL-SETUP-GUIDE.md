@@ -56,13 +56,13 @@ Run these scripts to verify everything is working:
 
 1. **Connection Test**:
    ```bash
-   npm run test-connection --workspace backend
+   npm run test-connection
    ```
    Expected output: "✅ All connection tests passed!"
 
 2. **Bill Saving Test** (after running SQL setup):
    ```bash
-   npm run test-bill-saving --workspace backend
+   npm run test-bill-saving
    ```
    Expected output: "✅ All tests passed! Bill saving functionality is working correctly."
 

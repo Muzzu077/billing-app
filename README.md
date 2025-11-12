@@ -25,7 +25,7 @@ Quotation generator for electrical businesses, built with React (Vite) on the fr
 ## Local Development
 
 ```bash
-# install all workspace dependencies
+# install all dependencies
 npm install
 
 # copy backend environment variables
@@ -38,12 +38,12 @@ cp backend/env.example backend/.env
 npm run dev
 ```
 
-Useful workspace scripts:
+Useful scripts:
 
 - `npm run server` – backend only (Express + nodemon)
 - `npm run client` – frontend only (Vite dev server)
 - `npm run build` – creates the production frontend bundle (`frontend/dist`)
-- `npm run test-connection --workspace backend` – quick Supabase health check
+- `npm run test-connection` – quick Supabase health check
 
 ## Environment Variables
 
@@ -62,8 +62,9 @@ FRONTEND_URL=http://localhost:5173
 2. Import the repo in Vercel.
 3. Set the environment variables listed above in the Vercel project.
 4. Vercel will run:
-   - `npm install` (installs workspaces)
-   - `npm run build --workspace frontend`
+   - `npm install` (installs root + backend dependencies)
+   - `npm run install:all` (installs frontend/backend node_modules)
+   - `npm run build`
    - Bundle `api/index.js` as the serverless Express API.
 5. The frontend is published from `frontend/dist`; all `/api/*` requests are routed to the Express app.
 
@@ -87,7 +88,7 @@ billing-app/
 │   ├── src/
 │   ├── public/
 │   └── package.json
-├── package.json          # npm workspaces + dev scripts
+├── package.json          # root tooling + shared dependencies
 ├── package-lock.json
 └── vercel.json           # Vercel deployment config
 ```
@@ -104,8 +105,8 @@ Run the SQL in `backend/billing-app-setup.sql` inside the Supabase SQL Editor. I
 ## Testing the Data Layer
 
 ```
-npm run test-connection --workspace backend
-npm run test-bill-saving --workspace backend
+npm run test-connection
+npm run test-bill-saving
 ```
 
 Both scripts rely on the Supabase environment variables and confirm that the database schema matches the application expectations.
