@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Brand = require('../models/Brand');
+const supabaseService = require('../services/supabaseService');
 const multer = require('multer');
 const path = require('path');
 
@@ -28,7 +28,7 @@ const upload = multer({
 // Get all brands
 router.get('/', async (req, res) => {
   try {
-    const brands = await Brand.find({ isActive: true }).sort({ name: 1 });
+    const brands = await supabaseService.getAllBrands();
     res.json(brands);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 // Get single brand
 router.get('/:id', async (req, res) => {
   try {
-    const brand = await Brand.findById(req.params.id);
+    const brand = await supabaseService.getBrandById(req.params.id);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }
@@ -54,15 +54,15 @@ router.post('/', upload.single('logo'), async (req, res) => {
     const brandData = {
       name: req.body.name,
       tagline: req.body.tagline,
-      category: req.body.category
+      category: req.body.category,
+      is_active: true
     };
     
     if (req.file) {
       brandData.logo = `/uploads/logos/${req.file.filename}`;
     }
     
-    const brand = new Brand(brandData);
-    const newBrand = await brand.save();
+    const newBrand = await supabaseService.createBrand(brandData);
     res.status(201).json(newBrand);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -82,7 +82,7 @@ router.put('/:id', upload.single('logo'), async (req, res) => {
       brandData.logo = `/uploads/logos/${req.file.filename}`;
     }
     
-    const brand = await Brand.findByIdAndUpdate(req.params.id, brandData, { new: true });
+    const brand = await supabaseService.updateBrand(req.params.id, brandData);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }
@@ -95,7 +95,7 @@ router.put('/:id', upload.single('logo'), async (req, res) => {
 // Delete brand (soft delete)
 router.delete('/:id', async (req, res) => {
   try {
-    const brand = await Brand.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true });
+    const brand = await supabaseService.deleteBrand(req.params.id);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }

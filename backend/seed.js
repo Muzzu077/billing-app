@@ -1,15 +1,8 @@
-const mongoose = require('mongoose');
-const Brand = require('./models/Brand');
-const Product = require('./models/Product');
+const supabaseService = require('./services/supabaseService');
 require('dotenv').config();
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/billing-app', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const db = mongoose.connection;
+// Initialize Supabase service
+supabaseService.initializeSupabase();
 
 // Sample brands data
 const brandsData = [
@@ -17,43 +10,43 @@ const brandsData = [
     name: 'Havells',
     tagline: 'powering lives',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   },
   {
     name: 'Finolex',
     tagline: 'trusted for generations',
     category: 'FR-LSZH',
-    isActive: true
+    is_active: true
   },
   {
     name: 'GM',
     tagline: 'quality wires',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   },
   {
     name: 'Polycab',
     tagline: 'trusted by millions',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   },
   {
     name: 'Goldmedal',
     tagline: 'excellence in wiring',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   },
   {
     name: 'Apar',
     tagline: 'reliable solutions',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   },
   {
     name: 'V-Guard',
     tagline: 'protecting what matters',
     category: 'HR-FR',
-    isActive: true
+    is_active: true
   }
 ];
 
@@ -95,27 +88,49 @@ const seedDatabase = async () => {
   try {
     console.log('Starting database seeding...');
 
-    // Clear existing data
-    await Brand.deleteMany({});
-    await Product.deleteMany({});
+    // Wait for Supabase to initialize
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    console.log('Cleared existing data');
-
+    // Clear existing data (we'll need to implement this in supabaseService)
+    console.log('Clearing existing data...');
+    
     // Insert brands
-    const brands = await Brand.insertMany(brandsData);
-    console.log(`Inserted ${brands.length} brands`);
+    console.log('Inserting brands...');
+    const insertedBrands = [];
+    for (const brandData of brandsData) {
+      try {
+        const brand = await supabaseService.createBrand(brandData);
+        insertedBrands.push(brand);
+        console.log(`Inserted brand: ${brand.name}`);
+      } catch (error) {
+        console.error(`Error inserting brand ${brandData.name}:`, error.message);
+      }
+    }
+    
+    console.log(`Inserted ${insertedBrands.length} brands`);
 
     // Insert products for each brand
-    for (const brand of brands) {
-      const productsForBrand = productsData.map(product => ({
-        ...product,
-        brand: brand._id
-      }));
-      
-      await Product.insertMany(productsForBrand);
-      console.log(`Inserted ${productsForBrand.length} products for ${brand.name}`);
+    console.log('Inserting products...');
+    let totalProducts = 0;
+    for (const brand of insertedBrands) {
+      for (const productData of productsData) {
+        try {
+          await supabaseService.createProduct({
+            brand_id: brand.id,
+            description: productData.description,
+            list_price: productData.listPrice,
+            coil_price: productData.coilPrice,
+            is_active: true
+          });
+          totalProducts++;
+        } catch (error) {
+          console.error(`Error inserting product for ${brand.name}:`, error.message);
+        }
+      }
+      console.log(`Inserted products for ${brand.name}`);
     }
 
+    console.log(`Inserted ${totalProducts} products`);
     console.log('Database seeding completed successfully!');
     process.exit(0);
   } catch (error) {
@@ -124,12 +139,5 @@ const seedDatabase = async () => {
   }
 };
 
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-  seedDatabase();
-});
-
-db.on('error', (error) => {
-  console.error('MongoDB connection error:', error);
-  process.exit(1);
-}); 
+// Run the seeding
+seedDatabase();

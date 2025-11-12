@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/Product');
+const supabaseService = require('../services/supabaseService');
 
 // Get all products
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find({ isActive: true })
-      .populate('brand', 'name')
-      .sort({ description: 1 });
+    const products = await supabaseService.getAllProducts();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -17,10 +15,7 @@ router.get('/', async (req, res) => {
 // Get products by brand
 router.get('/brand/:brandId', async (req, res) => {
   try {
-    const products = await Product.find({ 
-      brand: req.params.brandId, 
-      isActive: true 
-    }).sort({ description: 1 });
+    const products = await supabaseService.getProductsByBrand(req.params.brandId);
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -30,7 +25,7 @@ router.get('/brand/:brandId', async (req, res) => {
 // Get single product
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('brand', 'name');
+    const product = await supabaseService.getProductById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -43,10 +38,13 @@ router.get('/:id', async (req, res) => {
 // Create new product
 router.post('/', async (req, res) => {
   try {
-    const product = new Product(req.body);
-    const newProduct = await product.save();
-    const populatedProduct = await Product.findById(newProduct._id).populate('brand', 'name');
-    res.status(201).json(populatedProduct);
+    const productData = {
+      ...req.body,
+      is_active: true
+    };
+    
+    const newProduct = await supabaseService.createProduct(productData);
+    res.status(201).json(newProduct);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -55,8 +53,7 @@ router.post('/', async (req, res) => {
 // Update product
 router.put('/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
-      .populate('brand', 'name');
+    const product = await supabaseService.updateProduct(req.params.id, req.body);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -69,7 +66,7 @@ router.put('/:id', async (req, res) => {
 // Delete product (soft delete)
 router.delete('/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true });
+    const product = await supabaseService.deleteProduct(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }

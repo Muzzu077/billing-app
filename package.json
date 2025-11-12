@@ -1,20 +1,31 @@
 {
   "name": "billing-app",
+  "private": true,
   "version": "1.0.0",
-  "description": "Electrical Business Quotation Generator with MongoDB Backend",
+  "description": "Electrical Business Quotation Generator with Supabase Backend",
   "main": "index.js",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd backend && npm run dev",
-    "client": "cd frontend && npm run dev",
-    "build": "cd frontend && npm run build",
-    "vercel-build": "cd frontend && npm run build",
-    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+    "server": "npm run dev --workspace backend",
+    "client": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace frontend",
+    "test-connection": "npm run test-connection --workspace backend",
+    "test-bill-saving": "npm run test-bill-saving --workspace backend"
   },
-  "keywords": ["quotation", "electrical", "business", "react", "mongodb"],
+  "keywords": [
+    "quotation",
+    "electrical",
+    "business",
+    "react",
+    "supabase"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
-} 
+}

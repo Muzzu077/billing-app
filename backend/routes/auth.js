@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
+const supabaseService = require('../services/supabaseService');
 
 const router = express.Router();
 
@@ -12,14 +12,18 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    const admin = await Admin.findOne({ username });
-    if (!admin) return res.status(401).json({ message: 'Invalid credentials' });
+    const isValid = await supabaseService.verifyAdminPassword(username, password);
+    if (!isValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-    const ok = await admin.verifyPassword(password);
-    if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
+    const admin = await supabaseService.getAdmin(username);
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
     const token = jwt.sign(
-      { sub: admin._id, username: admin.username },
+      { sub: admin.id, username: admin.username },
       process.env.JWT_SECRET || 'dev_secret',
       { expiresIn: '7d' }
     );
@@ -27,10 +31,10 @@ router.post('/login', async (req, res) => {
     res.json({
       token,
       admin: {
-        id: admin._id,
+        id: admin.id,
         username: admin.username,
-        displayName: admin.displayName,
-        priceMultiplier: admin.priceMultiplier,
+        displayName: admin.display_name,
+        priceMultiplier: admin.price_multiplier,
       },
     });
   } catch (err) {
@@ -45,20 +49,23 @@ router.get('/me', async (req, res) => {
     const auth = req.headers.authorization || '';
     const [, token] = auth.split(' ');
     if (!token) return res.status(401).json({ message: 'Unauthorized' });
+    
     let payload;
     try {
       payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret');
     } catch (e) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-    const admin = await Admin.findById(payload.sub);
+    
+    const admin = await supabaseService.getAdmin(payload.username);
     if (!admin) return res.status(401).json({ message: 'Unauthorized' });
+    
     res.json({
       admin: {
-        id: admin._id,
+        id: admin.id,
         username: admin.username,
-        displayName: admin.displayName,
-        priceMultiplier: admin.priceMultiplier,
+        displayName: admin.display_name,
+        priceMultiplier: admin.price_multiplier,
       },
     });
   } catch (err) {

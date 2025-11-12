@@ -149,7 +149,7 @@ const InvoicePreview = ({ invoiceData }) => {
   };
 
   return (
-    <div className="card max-w-3xl mx-auto">
+    <div className="card max-w-3xl mx-auto compact-mobile">
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 mb-4">
         <a href="#/history" className="btn btn-outline">

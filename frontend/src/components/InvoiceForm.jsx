@@ -29,11 +29,11 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
   };
 
   return (
-    <div className="card">
+    <div className="card compact-mobile">
       <h2 className="section-title mb-6">Invoice Details</h2>
 
       {/* Brand Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6 items-end">
         <div className="md:col-span-2">
           <label className="block text-sm font-medium mb-1">Brand</label>
           <select
@@ -67,7 +67,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
       </div>
 
       {/* Client Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6">
         <input
           type="text"
           name="clientName"
@@ -110,15 +110,15 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
       </div>
 
       {/* Items Table */}
-      <div className="mb-6">
+      <div className="mb-4 md:mb-6">
         <h3 className="section-title mb-4">Invoice Items</h3>
-        <table className="w-full">
+        <table className="w-full text-xs md:text-sm">
           <thead>
             <tr>
               <th className="text-left">Description</th>
-              <th className="text-left">Quantity</th>
-              <th className="text-left">List Price</th>
-              <th className="text-left">Coil Price</th>
+              <th className="text-left w-20">Quantity</th>
+              <th className="text-left w-24">List Price</th>
+              <th className="text-left w-24">Coil Price</th>
               <th></th>
             </tr>
           </thead>
@@ -141,7 +141,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
                     name="quantity"
                     value={item.quantity}
                     onChange={(e) => handleItemChange(index, e)}
-                    className="input-field w-24"
+                    className="input-field w-20 md:w-24"
                   />
                 </td>
                 <td>
@@ -150,7 +150,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
                     name="listPrice"
                     value={item.listPrice}
                     onChange={(e) => handleItemChange(index, e)}
-                    className="input-field w-32"
+                    className="input-field w-24 md:w-32"
                   />
                 </td>
                 <td>
@@ -159,13 +159,13 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
                     name="coilPrice"
                     value={item.coilPrice}
                     onChange={(e) => handleItemChange(index, e)}
-                    className="input-field w-32"
+                    className="input-field w-24 md:w-32"
                   />
                 </td>
                 <td>
                   <button
                     onClick={() => removeItem(index)}
-                    className="btn btn-outline text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    className="btn btn-outline text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs md:text-sm"
                   >
                     Remove
                   </button>
@@ -176,7 +176,7 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
         </table>
         <button
           onClick={addItem}
-          className="mt-4 btn btn-primary"
+          className="mt-3 md:mt-4 btn btn-primary text-xs md:text-sm"
         >
           Add Item
         </button>

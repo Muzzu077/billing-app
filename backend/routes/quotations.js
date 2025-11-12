@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const Quotation = require('../models/Quotation');
+const supabaseService = require('../services/supabaseService');
 
 // Get quotations, optional filter by paid status: /api/quotations?paid=true|false
 router.get('/', async (req, res) => {
   try {
-    const filter = {};
+    const quotations = await supabaseService.getAllQuotations();
+    
+    let filteredQuotations = quotations;
     if (typeof req.query.paid !== 'undefined') {
-      filter.paid = req.query.paid === 'true';
+      const paidFilter = req.query.paid === 'true';
+      filteredQuotations = quotations.filter(q => q.paid === paidFilter);
     }
-    const quotations = await Quotation.find(filter).sort({ createdAt: -1 });
-    res.json(quotations);
+    
+    res.json(filteredQuotations);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -19,7 +22,7 @@ router.get('/', async (req, res) => {
 // Get single quotation
 router.get('/:id', async (req, res) => {
   try {
-    const quotation = await Quotation.findById(req.params.id);
+    const quotation = await supabaseService.getQuotationById(req.params.id);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -32,8 +35,20 @@ router.get('/:id', async (req, res) => {
 // Create new quotation
 router.post('/', async (req, res) => {
   try {
-    const quotation = new Quotation(req.body);
-    const created = await quotation.save();
+    // Only send the data that frontend actually provides
+    const quotationData = {
+      brand: req.body.brand,
+      customerName: req.body.customerName,
+      date: req.body.date,
+      products: req.body.products,
+      subtotal: req.body.subtotal,
+      gst: req.body.gst,
+      total: req.body.total,
+      paid: req.body.paid || false
+      // Don't send terms or contactInfo - let database defaults handle them
+    };
+    
+    const created = await supabaseService.createQuotation(quotationData);
     res.status(201).json(created);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -43,7 +58,7 @@ router.post('/', async (req, res) => {
 // Update quotation
 router.put('/:id', async (req, res) => {
   try {
-    const quotation = await Quotation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const quotation = await supabaseService.updateQuotation(req.params.id, req.body);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -60,7 +75,8 @@ router.patch('/:id/paid', async (req, res) => {
     if (typeof paid !== 'boolean') {
       return res.status(400).json({ message: 'paid must be boolean' });
     }
-    const quotation = await Quotation.findByIdAndUpdate(req.params.id, { $set: { paid } }, { new: true });
+    
+    const quotation = await supabaseService.updateQuotation(req.params.id, { paid });
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -73,7 +89,7 @@ router.patch('/:id/paid', async (req, res) => {
 // Delete quotation
 router.delete('/:id', async (req, res) => {
   try {
-    const quotation = await Quotation.findByIdAndDelete(req.params.id);
+    const quotation = await supabaseService.deleteQuotation(req.params.id);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }

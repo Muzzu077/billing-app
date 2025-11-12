@@ -37,6 +37,26 @@
 
   /* Mobile-specific optimizations */
   @media (max-width: 640px) {
+    .compact-mobile {
+      font-size: 0.875rem; /* text-sm */
+    }
+    .compact-mobile .btn { @apply text-xs px-2 py-1; }
+    .compact-mobile .card { @apply p-3; }
+    .compact-mobile h1, .compact-mobile h2, .compact-mobile h3 { @apply text-base; }
+    .compact-mobile table { @apply text-xs; }
+    .compact-mobile table th, .compact-mobile table td { padding: 0.375rem; }
+    .compact-mobile .input-field { @apply text-sm py-2; }
+  }
+
+  @media (max-width: 480px) {
+    .compact-mobile table th, .compact-mobile table td { padding: 0.35rem; }
+  }
+  
+  @media (max-width: 360px) {
+    .compact-mobile table th, .compact-mobile table td { padding: 0.3rem; }
+  }
+  
+  @media (max-width: 640px) {
     .card {
       @apply rounded-lg;
     }
