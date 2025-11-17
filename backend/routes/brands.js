@@ -1,28 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const supabaseService = require('../services/supabaseService');
-const multer = require('multer');
-const path = require('path');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/logos/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
-  }
+const buildBrandPayload = (body) => ({
+  name: body.name,
+  tagline: body.tagline || null,
+  category: body.category || null,
+  logo: body.logo || null,
 });
 
 // Get all brands
@@ -49,19 +33,17 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new brand
-router.post('/', upload.single('logo'), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const brandData = {
-      name: req.body.name,
-      tagline: req.body.tagline,
-      category: req.body.category,
-      is_active: true
+      ...buildBrandPayload(req.body),
+      is_active: true,
     };
-    
-    if (req.file) {
-      brandData.logo = `/uploads/logos/${req.file.filename}`;
+
+    if (!brandData.name) {
+      return res.status(400).json({ message: 'Brand name is required' });
     }
-    
+
     const newBrand = await supabaseService.createBrand(brandData);
     res.status(201).json(newBrand);
   } catch (error) {
@@ -70,18 +52,10 @@ router.post('/', upload.single('logo'), async (req, res) => {
 });
 
 // Update brand
-router.put('/:id', upload.single('logo'), async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    const brandData = {
-      name: req.body.name,
-      tagline: req.body.tagline,
-      category: req.body.category
-    };
-    
-    if (req.file) {
-      brandData.logo = `/uploads/logos/${req.file.filename}`;
-    }
-    
+    const brandData = buildBrandPayload(req.body);
+
     const brand = await supabaseService.updateBrand(req.params.id, brandData);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });

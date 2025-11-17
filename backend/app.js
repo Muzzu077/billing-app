@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
 require('dotenv').config();
 
 const supabaseService = require('./services/supabaseService');
@@ -15,16 +13,6 @@ app.use(
   })
 );
 app.use(express.json());
-
-// Ensure uploads directory exists only when running in an environment with a writable filesystem
-if (!process.env.VERCEL) {
-  try {
-    fs.mkdirSync(path.join(__dirname, 'uploads', 'logos'), { recursive: true });
-    app.use(express.static(path.join(__dirname, 'uploads')));
-  } catch {
-    // noop
-  }
-}
 
 // Initialize Supabase connection on cold start
 supabaseService.initializeSupabase();

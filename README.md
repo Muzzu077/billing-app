@@ -51,6 +51,7 @@ Create `backend/.env` (Vercel → Project Settings → Environment Variables use
 
 ```
 SUPABASE_URL=https://jqmfzcvbjgmjyjgptydv.supabase.co
+SUPABASE SEVICE ROLL : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTM1NDIwNSwiZXhwIjoyMDc2OTMwMjA1fQ.FBWle3r1-PdH19pVyYeDBwCN2XMAngljv4QETMIZ5Mw
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTQyMDUsImV4cCI6MjA3NjkzMDIwNX0.75WDmjz6DBALdshXtWlbLwyJof3DQeGTPlu2Kz5ks_8
 JWT_SECRET=0f0b29cfe4996e5de4246d67c20923ba1b4498e5ac2d8787f7d93c6a
 FRONTEND_URL=http://localhost:5173
@@ -60,7 +61,7 @@ FRONTEND_URL=http://localhost:5173
 
 1. Push your code to GitHub/GitLab/Bitbucket.
 2. Import the repo in Vercel.
-3. Set the same values in your Vercel project (copy/paste the Supabase URL, anon key, and JWT secret above; adjust `FRONTEND_URL` to your deployed domain later).
+3. Set the same values in your Vercel project (URL + service role key + JWT secret; adjust `FRONTEND_URL` to your deployed domain later).
 4. Vercel will run:
    - `npm install` (installs root + backend dependencies)
    - `npm run install:all` (installs frontend/backend node_modules)

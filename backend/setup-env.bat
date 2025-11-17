@@ -1,29 +1,31 @@
-# Environment Setup Script
+@echo off
+setlocal
 
-echo "Setting up .env file with your Supabase credentials..."
+echo Setting up .env file with placeholder Supabase credentials...
 
-# Create .env file with Supabase credentials
-cat > .env << 'EOF'
-# Supabase Configuration
-SUPABASE_URL=https://jqmfzcvbjgmjyjgptydv.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTQyMDUsImV4cCI6MjA3NjkzMDIwNX0.75WDmjz6DBALdshXtWlbLwyJof3DQeGTPlu2Kz5ks_8
+(
+echo # Supabase Configuration
+echo SUPABASE_URL=https://your-project-ref.supabase.co
+echo SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+echo # Optional fallback for read-only contexts
+echo SUPABASE_ANON_KEY=your-anon-key
+echo.
+echo # Server Port
+echo PORT=5000
+echo.
+echo # Node Environment
+echo NODE_ENV=development
+echo.
+echo # Optional: JWT secret (set in production)
+echo JWT_SECRET=replace-with-a-secure-random-string
+echo.
+echo # Optional: Admin reset defaults (used by scripts/setupAdmin.js if CLI args not provided)
+echo # ADMIN_USERNAME=admin
+echo # ADMIN_PASSWORD=changeme
+) > .env
 
-# Server Port
-PORT=5000
-
-# Node Environment
-NODE_ENV=development 
-
-# Optional: JWT secret (set in production)
-JWT_SECRET=0f0b29cfe4996e5de4246d67c20923ba1b4498e5ac2d8787f7d93c6a
-
-# Optional: Admin reset defaults (used by scripts/setupAdmin.js if CLI args not provided)
-# ADMIN_USERNAME=admin
-# ADMIN_PASSWORD=changeme
-EOF
-
-echo "✅ .env file created successfully!"
-echo "📋 Next steps:"
-echo "   1. Create database tables in Supabase"
-echo "   2. Run: npm run setup-admin -- --username admin --password admin123"
-echo "   3. Run: npm run dev"
+echo ✅ .env file created successfully!
+echo 📋 Next steps:
+echo    1. Open backend/.env and replace placeholders with your actual Supabase values.
+echo    2. Run the SQL in backend/billing-app-setup.sql inside Supabase.
+echo    3. npm run dev

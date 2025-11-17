@@ -100,9 +100,5 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# Upload directories (keep structure but ignore contents)
-backend/uploads/*
-!backend/uploads/.gitkeep
-
 # Vercel
 .vercel
