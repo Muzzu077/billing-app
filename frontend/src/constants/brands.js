@@ -1,15 +1,23 @@
 // Brand configurations used across the app
 // How to add a new brand (future-proof):
-// 1) Add an entry below with a unique `key`, display `name`, and the `logo` path.
-// 2) Put the logo image file in `public/logos/` and reference it like `/logos/<file>.png`.
-// 3) The new brand will automatically appear in the brand selector in `components/InvoiceForm.jsx`.
-// 4) The selected brand's logo will automatically show in `components/InvoicePreview.jsx`.
+// 1) Drop the logo image into `src/assets/brands/`.
+// 2) Import it below (Vite will fingerprint + serve correctly in prod).
+// 3) Add an entry with a unique `key`, display `name`, and imported `logo`.
+// 4) The selector + preview will update automatically.
+import aparLogo from '../assets/brands/apar-logo.png';
+import finolexLogo from '../assets/brands/finolex-logo.png';
+import gmLogo from '../assets/brands/gm-logo.png';
+import goldmedalLogo from '../assets/brands/goldmedal-logo.png';
+import havellsLogo from '../assets/brands/havells-logo.png';
+import polycabLogo from '../assets/brands/polycab-logo.png';
+import vguardLogo from '../assets/brands/vguard-logo.png';
+
 export const BRANDS = [
-  { key: 'apar', name: 'APAR', logo: '/apar-logo.png' },
-  { key: 'finolex', name: 'FINOLEX', logo: '/finolex-logo.png' },
-  { key: 'gm', name: 'GM', logo: '/gm-logo.png' },
-  { key: 'goldmedal', name: 'GOLDMEDAL', logo: '/goldmedal-logo.png' },
-  { key: 'havels', name: 'HAVELS', logo: '/havells-logo.png' },
-  { key: 'polycab', name: 'POLYCAB', logo: '/polycab-logo.png' },
-  { key: 'vguard', name: 'V-GUARD', logo: '/vguard-logo.png' },
+  { key: 'apar', name: 'APAR', logo: aparLogo },
+  { key: 'finolex', name: 'FINOLEX', logo: finolexLogo },
+  { key: 'gm', name: 'GM', logo: gmLogo },
+  { key: 'goldmedal', name: 'GOLDMEDAL', logo: goldmedalLogo },
+  { key: 'havels', name: 'HAVELS', logo: havellsLogo },
+  { key: 'polycab', name: 'POLYCAB', logo: polycabLogo },
+  { key: 'vguard', name: 'V-GUARD', logo: vguardLogo },
 ];
