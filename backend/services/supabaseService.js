@@ -7,43 +7,26 @@ class SupabaseService {
   }
 
   initializeSupabase() {
-    if (this.supabase) return this.supabase;
-
     try {
       const supabaseUrl = process.env.SUPABASE_URL;
-      const serviceKey =
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+      const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-      if (!supabaseUrl || !serviceKey) {
-        console.warn(
-          '⚠️  Supabase credentials not found. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your .env file'
-        );
-        return null;
+      if (!supabaseUrl || !supabaseKey) {
+        console.log('⚠️  Supabase credentials not found. Please set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file');
+        console.log('📋 To set up Supabase:');
+        console.log('   1. Go to https://supabase.com');
+        console.log('   2. Create a new project');
+        console.log('   3. Get your project URL and anon key');
+        console.log('   4. Add them to your .env file');
+        console.log('   5. Restart the server');
+        return;
       }
 
-      if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        console.warn(
-          'ℹ️  Falling back to SUPABASE_ANON_KEY. For write operations, prefer SUPABASE_SERVICE_ROLE_KEY.'
-        );
-      }
-
-      this.supabase = createClient(supabaseUrl, serviceKey, {
-        auth: { persistSession: false },
-      });
+      this.supabase = createClient(supabaseUrl, supabaseKey);
       console.log('✅ Supabase service initialized successfully');
-      return this.supabase;
     } catch (error) {
       console.error('❌ Failed to initialize Supabase:', error.message);
-      return null;
     }
-  }
-
-  getClient() {
-    const client = this.initializeSupabase();
-    if (!client) {
-      throw new Error('Supabase not initialized. Check your environment variables.');
-    }
-    return client;
   }
 
   // Helpers to map DB rows to frontend-friendly shapes
@@ -111,12 +94,13 @@ class SupabaseService {
   // Admin operations
   async createAdmin(username, password, displayName = username, priceMultiplier = 1) {
     try {
-      const supabase = this.getClient();
+      this.initializeSupabase();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(password, salt);
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('admins')
         .insert([
           {
@@ -139,9 +123,10 @@ class SupabaseService {
 
   async getAdmin(username) {
     try {
-      const supabase = this.getClient();
+      this.initializeSupabase();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('admins')
         .select('*')
         .eq('username', username)
@@ -170,9 +155,9 @@ class SupabaseService {
   // Brand operations
   async createBrand(brandData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('brands')
         .insert([brandData])
         .select()
@@ -188,9 +173,9 @@ class SupabaseService {
 
   async getAllBrands() {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('brands')
         .select('*')
         .eq('is_active', true)
@@ -206,9 +191,9 @@ class SupabaseService {
 
   async getBrandById(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('brands')
         .select('*')
         .eq('id', id)
@@ -224,9 +209,9 @@ class SupabaseService {
 
   async updateBrand(id, updateData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('brands')
         .update(updateData)
         .eq('id', id)
@@ -243,9 +228,9 @@ class SupabaseService {
 
   async deleteBrand(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { error } = await supabase
+      const { error } = await this.supabase
         .from('brands')
         .update({ is_active: false })
         .eq('id', id);
@@ -261,9 +246,9 @@ class SupabaseService {
   // Product operations
   async createProduct(productData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('products')
         .insert([productData])
         .select(`
@@ -285,9 +270,9 @@ class SupabaseService {
 
   async getAllProducts() {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('products')
         .select(`
           *,
@@ -309,9 +294,9 @@ class SupabaseService {
 
   async getProductsByBrand(brandId) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('products')
         .select('*')
         .eq('brand_id', brandId)
@@ -328,9 +313,9 @@ class SupabaseService {
 
   async getProductById(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('products')
         .select(`
           *,
@@ -352,9 +337,9 @@ class SupabaseService {
 
   async updateProduct(id, updateData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('products')
         .update(updateData)
         .eq('id', id)
@@ -377,9 +362,9 @@ class SupabaseService {
 
   async deleteProduct(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { error } = await supabase
+      const { error } = await this.supabase
         .from('products')
         .update({ is_active: false })
         .eq('id', id);
@@ -395,7 +380,7 @@ class SupabaseService {
   // Quotation operations
   async createQuotation(quotationData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
       // Map frontend camelCase to DB snake_case
       const payload = {
@@ -409,7 +394,7 @@ class SupabaseService {
         paid: quotationData.paid ?? false,
       };
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('quotations')
         .insert([payload])
         .select('*')
@@ -425,9 +410,9 @@ class SupabaseService {
 
   async getAllQuotations() {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('quotations')
         .select('*')
         .order('createdat', { ascending: false });
@@ -442,9 +427,9 @@ class SupabaseService {
 
   async getQuotationById(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('quotations')
         .select('*')
         .eq('id', id)
@@ -460,7 +445,7 @@ class SupabaseService {
 
   async updateQuotation(id, updateData) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
       // Map possible camelCase fields to snake_case
       const mapped = { ...updateData };
@@ -481,7 +466,7 @@ class SupabaseService {
         delete mapped.updatedAt;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('quotations')
         .update(mapped)
         .eq('id', id)
@@ -498,9 +483,9 @@ class SupabaseService {
 
   async deleteQuotation(id) {
     try {
-      const supabase = this.getClient();
+      if (!this.supabase) throw new Error('Supabase not initialized');
 
-      const { error } = await supabase
+      const { error } = await this.supabase
         .from('quotations')
         .delete()
         .eq('id', id);
