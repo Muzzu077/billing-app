@@ -9,6 +9,7 @@ import finolexLogo from '../assets/brands/finolex-logo.png';
 import gmLogo from '../assets/brands/gm-logo.png';
 import goldmedalLogo from '../assets/brands/goldmedal-logo.png';
 import havellsLogo from '../assets/brands/havells-logo.png';
+import fybrosLogo from '../assets/brands/fybros-logo.png';
 import polycabLogo from '../assets/brands/polycab-logo.png';
 import vguardLogo from '../assets/brands/vguard-logo.png';
 
@@ -18,6 +19,7 @@ export const BRANDS = [
   { key: 'gm', name: 'GM', logo: gmLogo },
   { key: 'goldmedal', name: 'GOLDMEDAL', logo: goldmedalLogo },
   { key: 'havels', name: 'HAVELS', logo: havellsLogo },
+  { key: 'fybros', name: 'FYBROS', logo: fybrosLogo },
   { key: 'polycab', name: 'POLYCAB', logo: polycabLogo },
   { key: 'vguard', name: 'V-GUARD', logo: vguardLogo },
 ];

@@ -59,6 +59,14 @@ const InvoicePreview = ({ invoiceData }) => {
   // Prefer the configured logo from invoice data (picked from constants/brands.js)
   const brandLogo = invoiceData?.brandLogo || invoiceData?.companyLogo || '';
 
+  const getFireRatingSuffix = () => {
+    const normalized = (companyName || '').trim().toUpperCase();
+    if (normalized === 'HAVELLS' || normalized === 'HAVELS' || normalized === 'APAR') {
+      return '(HRFR)';
+    }
+    return '(FR)';
+  };
+
   const handleExport = () => {
     const element = document.getElementById('invoice-content');
     const editButtons = document.querySelectorAll('.edit-btn, .edit-signature-btn');
@@ -249,7 +257,7 @@ const InvoicePreview = ({ invoiceData }) => {
             <thead>
               <tr>
                 <th className="bg-red-600 text-white p-2 text-left font-bold text-base" colSpan="5">
-                  {companyName} (FR)
+                  {companyName} {getFireRatingSuffix()}
                 </th>
               </tr>
               <tr className="bg-blue-900 text-white text-left">

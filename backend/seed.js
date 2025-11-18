@@ -13,6 +13,12 @@ const brandsData = [
     is_active: true
   },
   {
+    name: 'Fybros',
+    tagline: 'innovation in every wire',
+    category: 'FR',
+    is_active: true
+  },
+  {
     name: 'Finolex',
     tagline: 'trusted for generations',
     category: 'FR-LSZH',
