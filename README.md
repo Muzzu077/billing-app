@@ -50,10 +50,11 @@ Useful scripts:
 Create `backend/.env` (Vercel → Project Settings → Environment Variables uses the same keys):
 
 ```
-SUPABASE_URL=https://jqmfzcvbjgmjyjgptydv.supabase.co
-SUPABASE_SEVICE_ROLL_KEY : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTM1NDIwNSwiZXhwIjoyMDc2OTMwMjA1fQ.FBWle3r1-PdH19pVyYeDBwCN2XMAngljv4QETMIZ5Mw
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWZ6Y3ZiamdtanlqZ3B0eWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTQyMDUsImV4cCI6MjA3NjkzMDIwNX0.75WDmjz6DBALdshXtWlbLwyJof3DQeGTPlu2Kz5ks_8
-JWT_SECRET=0f0b29cfe4996e5de4246d67c20923ba1b4498e5ac2d8787f7d93c6a
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+# Optional fallback if you need to test read-only contexts
+SUPABASE_ANON_KEY=your-anon-key
+JWT_SECRET=replace-with-a-secure-random-string
 FRONTEND_URL=http://localhost:5173
 ```
 
