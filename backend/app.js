@@ -25,8 +25,26 @@ const brandRoutes = require('./routes/brands');
 const productRoutes = require('./routes/products');
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Billing App API is running' });
+app.get('/api/health', async (req, res) => {
+  const dbStatus = { connected: false };
+  try {
+    const pool = dbService.getPool();
+    if (pool) {
+      const result = await pool.query('SELECT NOW() as time, (SELECT count(*) FROM admins) as admin_count');
+      dbStatus.connected = true;
+      dbStatus.time = result.rows[0].time;
+      dbStatus.adminCount = Number(result.rows[0].admin_count);
+    }
+  } catch (e) {
+    dbStatus.error = e.message;
+  }
+  res.json({
+    status: 'OK',
+    message: 'Billing App API is running',
+    database: dbStatus,
+    hasDbUrl: !!process.env.DATABASE_URL,
+    dbUrlPrefix: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 30) + '...' : 'NOT SET',
+  });
 });
 
 app.use('/api/auth', authRoutes);
