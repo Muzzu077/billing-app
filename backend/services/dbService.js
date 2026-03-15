@@ -17,10 +17,9 @@ class DBService {
 
       this.pool = new Pool({
         connectionString: connectionString,
-        ssl: {
-          rejectUnauthorized: false // Required for Neon/Render/etc.
-        }
+        ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
       });
+
 
       console.log('✅ PostgreSQL connected successfully');
 
@@ -36,10 +35,6 @@ class DBService {
     } catch (error) {
       console.error('❌ Failed to initialize Database:', error.message);
     }
-  }
-
-  initializeSupabase() {
-    this.connect();
   }
 
   getPool() {
@@ -207,8 +202,10 @@ class DBService {
 
   async updateBrand(id, updateData) {
     try {
-      const fields = Object.keys(updateData);
-      const values = Object.values(updateData);
+      const allowedFields = ['name', 'logo', 'tagline', 'category', 'is_active'];
+      const fields = Object.keys(updateData).filter(f => allowedFields.includes(f));
+      const values = fields.map(f => updateData[f]);
+      if (fields.length === 0) throw new Error('No valid fields to update');
       const setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
       values.push(id);
 
@@ -309,8 +306,10 @@ class DBService {
 
   async updateProduct(id, updateData) {
     try {
-      const fields = Object.keys(updateData);
-      const values = Object.values(updateData);
+      const allowedFields = ['brand_id', 'description', 'list_price', 'coil_price', 'is_active'];
+      const fields = Object.keys(updateData).filter(f => allowedFields.includes(f));
+      const values = fields.map(f => updateData[f]);
+      if (fields.length === 0) throw new Error('No valid fields to update');
       const setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
       values.push(id);
 
@@ -390,8 +389,10 @@ class DBService {
       if (mapped.customerName) { mapped.customername = mapped.customerName; delete mapped.customerName; }
       if (mapped.contactInfo) { mapped.contactinfo = mapped.contactInfo; delete mapped.contactInfo; }
       
-      const fields = Object.keys(mapped);
-      const values = Object.values(mapped).map(v => typeof v === 'object' ? JSON.stringify(v) : v);
+      const allowedFields = ['brand', 'customername', 'date', 'products', 'subtotal', 'gst', 'total', 'paid', 'terms', 'contactinfo'];
+      const fields = Object.keys(mapped).filter(f => allowedFields.includes(f));
+      const values = fields.map(f => typeof mapped[f] === 'object' ? JSON.stringify(mapped[f]) : mapped[f]);
+      if (fields.length === 0) throw new Error('No valid fields to update');
       const setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
       values.push(id);
 

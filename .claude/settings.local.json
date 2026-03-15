@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Muzammil/**)",
+      "Read(//c/Users/muzzu/**)",
+      "Bash(cd:*)",
+      "Bash(npx vite:*)"
+    ]
+  }
+}

@@ -3,51 +3,26 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-  const getInitial = () => localStorage.getItem('theme') || 'light';
-  const [theme, setTheme] = useState(getInitial);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
-  const applyTheme = (next) => {
-    if (next === 'dark') {
-      document.documentElement.classList.add('dark');
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      body.style.backgroundColor = '#020617';
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      body.style.backgroundColor = '#f8fafc';
     }
-    localStorage.setItem('theme', next);
-  };
-
-  // Ensure correct theme applied on mount
-  useEffect(() => {
-    applyTheme(theme);
-    // Also react to changes from other tabs/windows
-    const onStorage = (e) => {
-      if (e.key === 'theme' && e.newValue) {
-        applyTheme(e.newValue);
-        setTheme(e.newValue);
-      }
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
-  // Apply whenever theme state changes (in case it changes locally)
-  useEffect(() => {
-    applyTheme(theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggle = () => {
-    setTheme((t) => {
-      const next = t === 'dark' ? 'light' : 'dark';
-      // Apply immediately for instant visual response
-      applyTheme(next);
-      return next;
-    });
-  };
+  const toggle = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
-  const value = useMemo(() => ({ theme, setTheme, toggle }), [theme]);
+  const value = useMemo(() => ({ theme, toggle }), [theme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useThemeMode = () => useContext(ThemeContext);
-
-

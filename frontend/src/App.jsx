@@ -4,131 +4,167 @@ import { useAuth } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx';
 import Logout from './pages/Logout.jsx';
 import Save from './pages/Save.jsx';
+import History from './pages/History.jsx';
 import { useThemeMode } from './context/ThemeContext.jsx';
 import { Toaster } from 'react-hot-toast';
 import InvoiceForm from './components/InvoiceForm';
 import InvoicePreview from './components/InvoicePreview';
-import './index.css';
+import { Zap, Sun, Moon, LogOut, FileText, Clock, PlusCircle } from 'lucide-react';
+
+const defaultBrand = BRANDS.find(b => b.key === 'havells') || BRANDS[0];
+
+const INITIAL_INVOICE = {
+  companyName: defaultBrand?.name || 'HAVELLS',
+  companyLogo: defaultBrand?.logo,
+  brandLogo: defaultBrand?.logo,
+  brandKey: defaultBrand?.key,
+  companyAddress: '',
+  clientName: '',
+  clientAddress: '',
+  clientPhone: '',
+  invoiceDate: new Date().toISOString().split('T')[0],
+  invoiceNumber: `INV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-001`,
+  items: [
+    { description: '1.0 Sqmm 90 Mtrs', quantity: 10, listPrice: 2230, coilPrice: 1468 },
+    { description: '4.0 Sqmm 90 Mtrs', quantity: 5, listPrice: 7625, coilPrice: 5021 },
+  ],
+  taxRate: 0,
+};
+
+function useHashRoute() {
+  const [route, setRoute] = useState(() => window.location.hash.replace('#', '') || '/');
+  useEffect(() => {
+    const onHash = () => setRoute(window.location.hash.replace('#', '') || '/');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  return route;
+}
 
 function App() {
   const { isAuthenticated, admin } = useAuth();
   const { theme, toggle } = useThemeMode();
-  // Default brand key aligned with constants ("havels" currently used in list)
-  const defaultBrand = BRANDS.find(b => b.key === 'havels') || BRANDS[0];
-  const [route, setRoute] = useState(() => window.location.hash.replace('#', '') || '/');
+  const route = useHashRoute();
+  const [invoiceData, setInvoiceData] = useState(INITIAL_INVOICE);
 
-  useEffect(() => {
-    const onHashChange = () => setRoute(window.location.hash.replace('#', '') || '/');
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
-
-  // If a quotation was chosen from History for editing, load it into the form
+  // Load edit_quotation from localStorage when navigating back to home
   useEffect(() => {
     try {
       const raw = localStorage.getItem('edit_quotation');
       if (!raw) return;
       const q = JSON.parse(raw);
-      // Attempt to find brand config by name (case-insensitive)
       const brandEntry = BRANDS.find(b => (b.name || '').toLowerCase() === (q.brand || '').toLowerCase());
-      const next = {
-        companyName: q.brand || invoiceData.companyName,
-        brandKey: brandEntry?.key || invoiceData.brandKey,
-        companyLogo: brandEntry?.logo || invoiceData.companyLogo,
-        brandLogo: brandEntry?.logo || invoiceData.brandLogo,
-        companyAddress: invoiceData.companyAddress,
+      setInvoiceData({
+        companyName: q.brand || INITIAL_INVOICE.companyName,
+        brandKey: brandEntry?.key || INITIAL_INVOICE.brandKey,
+        companyLogo: brandEntry?.logo || INITIAL_INVOICE.companyLogo,
+        brandLogo: brandEntry?.logo || INITIAL_INVOICE.brandLogo,
+        companyAddress: INITIAL_INVOICE.companyAddress,
         clientName: q.customerName || '',
         clientAddress: q.customerAddress || '',
         clientPhone: q.customerPhone || '',
-        invoiceDate: q.date ? new Date(q.date).toISOString().split('T')[0] : invoiceData.invoiceDate,
-        invoiceNumber: q.invoiceNumber || invoiceData.invoiceNumber,
+        invoiceDate: q.date ? new Date(q.date).toISOString().split('T')[0] : INITIAL_INVOICE.invoiceDate,
+        invoiceNumber: q.invoiceNumber || INITIAL_INVOICE.invoiceNumber,
         items: Array.isArray(q.products) ? q.products.map(p => ({
           description: p.description,
           quantity: Number(p.qty || p.quantity || 1),
           listPrice: Number(p.listPrice || 0),
           coilPrice: Number(p.coilPrice || p.unitPrice || 0),
-        })) : invoiceData.items,
+        })) : INITIAL_INVOICE.items,
         taxRate: 0,
-      };
-      setInvoiceData(next);
+      });
     } catch (e) {
       console.warn('Failed to load edit_quotation:', e);
     } finally {
-      // Clear so it doesn't override subsequent edits
       localStorage.removeItem('edit_quotation');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route]);
-  const [invoiceData, setInvoiceData] = useState({
-    companyName: defaultBrand?.name || "Havells",
-    companyLogo: defaultBrand?.logo,
-    brandLogo: defaultBrand?.logo,
-    brandKey: defaultBrand?.key,
-    companyAddress: "123 Industrial Area, Hyderabad",
-    clientName: "",
-    clientAddress: "",
-    clientPhone: "",
-    invoiceDate: new Date().toISOString().split('T')[0],
-    invoiceNumber: `INV-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-001`,
-    items: [
-      { description: "1.0 Sqmm 90 Mtrs", quantity: 10, listPrice: 2230, coilPrice: 1468 },
-      { description: "4.0 Sqmm 90 Mtrs", quantity: 5, listPrice: 7625, coilPrice: 5021 },
-    ],
-    taxRate: 18,
-  });
 
-  // Apply admin-specific pricing (e.g., multiplier) to preview display only
   const effectiveItems = useMemo(() => {
     const multiplier = admin?.priceMultiplier || 1;
     return invoiceData.items.map((it) => ({
       ...it,
       listPrice: Number(it.listPrice ?? 0) * multiplier,
-      coilPrice: Number(it.coilPrice ?? it.unitPrice ?? 0) * multiplier,
+      coilPrice: Number(it.coilPrice ?? 0) * multiplier,
     }));
   }, [invoiceData.items, admin]);
 
+  const navItems = [
+    { path: '/', label: 'New Bill', icon: PlusCircle },
+    { path: '/save', label: 'Saved', icon: FileText },
+    { path: '/history', label: 'History', icon: Clock },
+  ];
+
+  const renderPage = () => {
+    if (route === '/logout') return <Logout />;
+    if (!isAuthenticated) return <Login />;
+    if (route === '/save') return <Save />;
+    if (route === '/history') return <History />;
+    return (
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+        <InvoiceForm invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
+        <InvoicePreview invoiceData={{ ...invoiceData, items: effectiveItems }} />
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen p-4 sm:p-6 md:p-8 animate-fade-in">
+    <div className="min-h-screen p-3 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <Toaster position="top-right" />
-        
-        {/* Sleek Glassmorphic Header */}
-        <div className="glass-card mb-6 md:mb-8 p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-sky-400 to-indigo-600 shadow-lg shadow-sky-500/30">
-              {/* Lightning/Electric SVG Icon for Electrical Business */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="section-title text-2xl md:text-3xl font-extrabold tracking-wide">Quotation Core</h1>
-              <p className="text-xs text-slate-400">Electrical Business Invoice Generator</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {isAuthenticated && (
-              <a href="#/logout" className="btn btn-outline border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/30 text-xs sm:text-sm">Logout</a>
-            )}
-            <button onClick={toggle} className="btn btn-outline text-xs sm:text-sm">
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
 
-        {route === '/logout' ? (
+        {/* Header */}
+        <header className="glass-card mb-6 md:mb-8 p-4 md:p-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 shadow-sm">
+                <Zap className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-slate-800 dark:text-white">
+                  Ayesha Electricals
+                </h1>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 tracking-wide uppercase">Quotation Generator</p>
+              </div>
+            </div>
 
-          <Logout />
-        ) : !isAuthenticated ? (
-          <Login />
-        ) : route === '/save' ? (
-          <Save />
-        ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            <InvoiceForm invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
-            <InvoicePreview invoiceData={{ ...invoiceData, items: effectiveItems }} />
+            <div className="flex items-center gap-2">
+              {isAuthenticated && (
+                <>
+                  {/* Navigation Tabs */}
+                  <nav className="flex bg-slate-100 dark:bg-slate-800/60 rounded-xl p-1 mr-2">
+                    {navItems.map(({ path, label, icon: Icon }) => (
+                      <a
+                        key={path}
+                        href={`#${path}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
+                          route === path
+                            ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        <span className="hidden sm:inline">{label}</span>
+                      </a>
+                    ))}
+                  </nav>
+
+                  <span className="text-xs text-slate-400 hidden md:inline mr-2">
+                    {admin?.displayName || admin?.username}
+                  </span>
+                  <a href="#/logout" className="btn-icon text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10" title="Logout">
+                    <LogOut className="h-4 w-4" />
+                  </a>
+                </>
+              )}
+              <button onClick={toggle} className="btn-icon" title="Toggle theme">
+                {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-500" />}
+              </button>
+            </div>
           </div>
-        )}
+        </header>
+
+        {renderPage()}
       </div>
     </div>
   );

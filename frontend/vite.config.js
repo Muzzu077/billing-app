@@ -1,14 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    chunkSizeWarningLimit: 700,
+  },
   server: {
     allowedHosts: [
       'localhost',
       '.ngrok-free.dev',
-      'melva-clausal-marla.ngrok-free.dev'
     ],
     proxy: {
       '/api': {
@@ -17,4 +18,4 @@ export default defineConfig({
       },
     },
   },
-}) 
+})

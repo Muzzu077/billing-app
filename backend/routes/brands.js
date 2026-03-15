@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const dbService = require('../services/dbService');
+const { requireAuth } = require('./middleware');
+
+router.use(requireAuth);
 
 const buildBrandPayload = (body) => ({
   name: body.name,

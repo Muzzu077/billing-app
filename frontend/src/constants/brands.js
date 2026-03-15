@@ -18,7 +18,7 @@ export const BRANDS = [
   { key: 'finolex', name: 'FINOLEX', logo: finolexLogo },
   { key: 'gm', name: 'GM', logo: gmLogo },
   { key: 'goldmedal', name: 'GOLDMEDAL', logo: goldmedalLogo },
-  { key: 'havels', name: 'HAVELS', logo: havellsLogo },
+  { key: 'havells', name: 'HAVELLS', logo: havellsLogo },
   { key: 'fybros', name: 'FYBROS', logo: fybrosLogo },
   { key: 'polycab', name: 'POLYCAB', logo: polycabLogo },
   { key: 'vguard', name: 'V-GUARD', logo: vguardLogo },

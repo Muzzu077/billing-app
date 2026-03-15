@@ -3,106 +3,132 @@
 @tailwind utilities;
 
 @layer base {
+  /* ---- Light mode (default) ---- */
   body {
-    @apply antialiased tracking-tight bg-slate-950 text-slate-100;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%);
-    background-attachment: fixed;
+    @apply antialiased tracking-tight bg-slate-50 text-slate-800;
+  }
+
+  /* ---- Dark mode ---- */
+  .dark body,
+  body.dark-body {
+    @apply bg-slate-950 text-slate-100;
+  }
+  html.dark {
+    background-color: #020617;
+    color-scheme: dark;
+  }
+  html:not(.dark) {
+    background-color: #f8fafc;
+    color-scheme: light;
   }
 }
 
 @layer components {
-  /* Glassmorphic Card */
+  /* ---- Glass Card ---- */
   .glass-card {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-2xl transition-all duration-300;
+    @apply bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors duration-200;
   }
-  
-  .glass-card:hover {
-    @apply bg-white/10 border-white/20 shadow-sky-500/10;
-    transform: translateY(-2px);
+  .dark .glass-card {
+    @apply bg-slate-900/80 border-slate-700/50 shadow-lg;
   }
 
-  /* Input Fields */
+  /* ---- Input Fields ---- */
   .input-field {
-    @apply block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl shadow-inner backdrop-blur-sm 
-           placeholder-slate-400 text-slate-100 text-sm transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 focus:bg-white/10;
+    @apply block w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl
+           placeholder-slate-400 text-slate-800 text-sm transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40;
+  }
+  .dark .input-field {
+    @apply bg-slate-800/60 border-slate-700/60 text-slate-100 placeholder-slate-500
+           focus:ring-amber-500/30 focus:border-amber-500/30;
   }
 
-  /* Buttons */
+  /* ---- Buttons ---- */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 
-           active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150
+           active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/25 
-           hover:from-sky-400 hover:to-indigo-500 hover:shadow-sky-500/40 hover:scale-[1.02];
+    @apply bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-sm
+           hover:from-amber-600 hover:to-orange-700;
   }
 
   .btn-outline {
-    @apply border border-white/20 bg-white/5 text-slate-100 backdrop-blur-sm
-           hover:bg-white/10 hover:border-white/30 hover:shadow-lg hover:shadow-white/5;
+    @apply border border-slate-200 bg-white text-slate-600
+           hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800;
+  }
+  .dark .btn-outline {
+    @apply border-slate-700 bg-slate-800/50 text-slate-300
+           hover:bg-slate-700/50 hover:border-slate-600 hover:text-white;
   }
 
   .btn-danger {
-    @apply bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/40;
+    @apply bg-red-50 border border-red-200 text-red-600 hover:bg-red-100;
+  }
+  .dark .btn-danger {
+    @apply bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20;
   }
 
-  /* Section Titles */
+  /* ---- Icon Button ---- */
+  .btn-icon {
+    @apply inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150
+           hover:bg-slate-100 active:scale-95 cursor-pointer;
+  }
+  .dark .btn-icon {
+    @apply hover:bg-slate-800;
+  }
+
+  /* ---- Section Titles ---- */
   .section-title {
-    @apply text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400;
+    @apply text-lg font-bold text-slate-800;
+  }
+  .dark .section-title {
+    @apply text-slate-100;
   }
 
-  /* Table Styles */
-  .custom-table {
-    @apply w-full border-separate border-spacing-y-2;
-  }
-
-  .custom-table th {
-    @apply px-4 py-3 text-left text-xs uppercase tracking-wider text-slate-400 font-medium;
-  }
-
-  .custom-table tr {
-    @apply glass-card bg-white/5 hover:bg-white/10;
-  }
-
-
-  .custom-table td {
-    @apply px-4 py-3 first:rounded-l-xl last:rounded-r-xl;
-  }
-
-  /* Navigation Bar */
-  .navbar {
-    @apply backdrop-blur-lg bg-slate-950/50 sticky top-0 z-50 border-b border-white/5 px-6 py-4 flex items-center justify-between mb-8;
-  }
-
-  /* Animation Classes */
+  /* ---- Animations ---- */
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
+    animation: fadeIn 0.3s ease-out forwards;
   }
 
-  .animate-stagger-1 { animation-delay: 0.1s; }
-  .animate-stagger-2 { animation-delay: 0.2s; }
-  .animate-stagger-3 { animation-delay: 0.3s; }
+  .animate-stagger-1 { animation-delay: 0.05s; }
+  .animate-stagger-2 { animation-delay: 0.1s; }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 }
 
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 8px;
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+.dark ::-webkit-scrollbar-thumb { @apply bg-slate-700; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
+.dark ::-webkit-scrollbar-thumb:hover { @apply bg-slate-600; }
+
+/* ---- Date input ---- */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-slate-950;
+/* ---- Number input spinners ---- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 rounded-full hover:bg-slate-700;
+/* ---- Select dropdown ---- */
+.dark select option {
+  background-color: #1e293b;
+  color: #e2e8f0;
 }

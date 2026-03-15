@@ -8,14 +8,13 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required' });
-    }
 
     const isValid = await dbService.verifyAdminPassword(username, password);
+
     if (!isValid) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+
 
     const admin = await dbService.getAdmin(username);
     if (!admin) {
