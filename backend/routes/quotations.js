@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const supabaseService = require('../services/supabaseService');
+const dbService = require('../services/dbService');
 
 // Get quotations, optional filter by paid status: /api/quotations?paid=true|false
 router.get('/', async (req, res) => {
   try {
-    const quotations = await supabaseService.getAllQuotations();
+    const quotations = await dbService.getAllQuotations();
     
     let filteredQuotations = quotations;
     if (typeof req.query.paid !== 'undefined') {
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // Get single quotation
 router.get('/:id', async (req, res) => {
   try {
-    const quotation = await supabaseService.getQuotationById(req.params.id);
+    const quotation = await dbService.getQuotationById(req.params.id);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
       // Don't send terms or contactInfo - let database defaults handle them
     };
     
-    const created = await supabaseService.createQuotation(quotationData);
+    const created = await dbService.createQuotation(quotationData);
     res.status(201).json(created);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
 // Update quotation
 router.put('/:id', async (req, res) => {
   try {
-    const quotation = await supabaseService.updateQuotation(req.params.id, req.body);
+    const quotation = await dbService.updateQuotation(req.params.id, req.body);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -76,7 +76,7 @@ router.patch('/:id/paid', async (req, res) => {
       return res.status(400).json({ message: 'paid must be boolean' });
     }
     
-    const quotation = await supabaseService.updateQuotation(req.params.id, { paid });
+    const quotation = await dbService.updateQuotation(req.params.id, { paid });
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }
@@ -89,7 +89,7 @@ router.patch('/:id/paid', async (req, res) => {
 // Delete quotation
 router.delete('/:id', async (req, res) => {
   try {
-    const quotation = await supabaseService.deleteQuotation(req.params.id);
+    const quotation = await dbService.deleteQuotation(req.params.id);
     if (!quotation) {
       return res.status(404).json({ message: 'Quotation not found' });
     }

@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const supabaseService = require('../services/supabaseService');
+const dbService = require('../services/dbService');
 
 const router = express.Router();
 
@@ -12,12 +12,12 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Username and password are required' });
     }
 
-    const isValid = await supabaseService.verifyAdminPassword(username, password);
+    const isValid = await dbService.verifyAdminPassword(username, password);
     if (!isValid) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const admin = await supabaseService.getAdmin(username);
+    const admin = await dbService.getAdmin(username);
     if (!admin) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -57,7 +57,7 @@ router.get('/me', async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
     
-    const admin = await supabaseService.getAdmin(payload.username);
+    const admin = await dbService.getAdmin(payload.username);
     if (!admin) return res.status(401).json({ message: 'Unauthorized' });
     
     res.json({

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: billing-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "@Muzzu6373M"
+      POSTGRES_DB: billing
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend/billing-app-setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: billing-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://postgres:%40Muzzu6373M@postgres-db:5432/billing
+      JWT_SECRET: "dev_secret"
+      NODE_ENV: production
+      FRONTEND_URL: "http://localhost"
+    depends_on:
+      - postgres-db
+
+  frontend:
+    build: ./frontend
+    container_name: billing-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+

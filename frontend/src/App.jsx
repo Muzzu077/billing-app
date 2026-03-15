@@ -88,23 +88,36 @@ function App() {
   }, [invoiceData.items, admin]);
 
   return (
-    <div className={"min-h-screen p-3 sm:p-6 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-950 " + (theme === 'dark' ? 'text-gray-100' : 'text-gray-900')}>
+    <div className="min-h-screen p-4 sm:p-6 md:p-8 animate-fade-in">
       <div className="max-w-7xl mx-auto">
         <Toaster position="top-right" />
-        <div className="card mb-4 sm:mb-6">
-          <div className="card-header">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Invoice Generator</h1>
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-              {isAuthenticated && (
-                <a href="#/logout" className="btn btn-outline text-xs sm:text-sm">Logout</a>
-              )}
-              <button onClick={toggle} className="btn btn-outline text-xs sm:text-sm">
-                {theme === 'dark' ? 'Light' : 'Dark'}
-              </button>
+        
+        {/* Sleek Glassmorphic Header */}
+        <div className="glass-card mb-6 md:mb-8 p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-sky-400 to-indigo-600 shadow-lg shadow-sky-500/30">
+              {/* Lightning/Electric SVG Icon for Electrical Business */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="section-title text-2xl md:text-3xl font-extrabold tracking-wide">Quotation Core</h1>
+              <p className="text-xs text-slate-400">Electrical Business Invoice Generator</p>
             </div>
           </div>
+          <div className="flex items-center gap-3">
+            {isAuthenticated && (
+              <a href="#/logout" className="btn btn-outline border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/30 text-xs sm:text-sm">Logout</a>
+            )}
+            <button onClick={toggle} className="btn btn-outline text-xs sm:text-sm">
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          </div>
         </div>
+
         {route === '/logout' ? (
+
           <Logout />
         ) : !isAuthenticated ? (
           <Login />

@@ -157,11 +157,12 @@ const InvoicePreview = ({ invoiceData }) => {
   };
 
   return (
-    <div className="card max-w-3xl mx-auto compact-mobile">
+    <div className="glass-card max-w-3xl mx-auto p-4 sm:p-6 animate-fade-in animate-stagger-2">
       {/* Action Buttons */}
-      <div className="flex justify-end gap-2 mb-4">
+      <div className="flex justify-end gap-2 mb-6">
         <a href="#/history" className="btn btn-outline">
           History
+
         </a>
         <a href="#/save" className="btn btn-outline">Saved Bills</a>
         <button
@@ -220,6 +221,7 @@ const InvoicePreview = ({ invoiceData }) => {
 
         <div
           id="invoice-content"
+          className="bg-white text-slate-900 rounded-2xl shadow-2xl p-6 md:p-10 border border-white/10 mb-4"
           style={{
             fontFamily: 'Arial, Helvetica, sans-serif',
             WebkitFontSmoothing: 'antialiased',
@@ -233,6 +235,7 @@ const InvoicePreview = ({ invoiceData }) => {
 
         {/* Header: Brand logo (top) + Date (bottom) */}
         <div className="mb-6">
+
           <div className="flex items-center" style={{ height: '100px' }}>
             {brandLogo && (
               <img

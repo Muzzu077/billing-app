@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const supabaseService = require('../services/supabaseService');
+const dbService = require('../services/dbService');
 
 const buildBrandPayload = (body) => ({
   name: body.name,
@@ -12,7 +12,7 @@ const buildBrandPayload = (body) => ({
 // Get all brands
 router.get('/', async (req, res) => {
   try {
-    const brands = await supabaseService.getAllBrands();
+    const brands = await dbService.getAllBrands();
     res.json(brands);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // Get single brand
 router.get('/:id', async (req, res) => {
   try {
-    const brand = await supabaseService.getBrandById(req.params.id);
+    const brand = await dbService.getBrandById(req.params.id);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'Brand name is required' });
     }
 
-    const newBrand = await supabaseService.createBrand(brandData);
+    const newBrand = await dbService.createBrand(brandData);
     res.status(201).json(newBrand);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -56,7 +56,7 @@ router.put('/:id', async (req, res) => {
   try {
     const brandData = buildBrandPayload(req.body);
 
-    const brand = await supabaseService.updateBrand(req.params.id, brandData);
+    const brand = await dbService.updateBrand(req.params.id, brandData);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }
@@ -69,7 +69,7 @@ router.put('/:id', async (req, res) => {
 // Delete brand (soft delete)
 router.delete('/:id', async (req, res) => {
   try {
-    const brand = await supabaseService.deleteBrand(req.params.id);
+    const brand = await dbService.deleteBrand(req.params.id);
     if (!brand) {
       return res.status(404).json({ message: 'Brand not found' });
     }

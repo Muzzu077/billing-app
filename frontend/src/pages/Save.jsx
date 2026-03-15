@@ -68,18 +68,18 @@ const Save = () => {
   if (error) return <div className="p-3 sm:p-6 text-red-600">{error}</div>;
 
   return (
-    <div className="p-3 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
-        <h2 className="text-xl sm:text-2xl font-bold">Saved Bills (this session)</h2>
-        <a href="#/" className="btn btn-outline text-sm self-start sm:self-auto">Back to Billing</a>
+    <div className="glass-card p-4 sm:p-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3 border-b border-white/10 pb-4">
+        <h2 className="section-title text-xl sm:text-2xl">Saved Bills (Session)</h2>
+        <a href="#/" className="btn btn-primary text-sm self-start sm:self-auto">Back to Billing</a>
       </div>
 
       {bills.length === 0 ? (
-        <div className="text-gray-600 text-center py-8">No bills saved in this session yet.</div>
+        <div className="text-slate-400 text-center py-8">No bills saved in this session yet.</div>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-4">
           {bills.map((bill) => (
-            <div key={bill._id} className="border rounded-lg p-4">
+            <div key={bill._id} className="bg-white/3 border border-white/5 rounded-xl p-4 hover:bg-white/5 transition-all">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
                 <div className="font-medium text-lg">{bill.customerName} - {bill.brand}</div>
                 <span className={`text-xs px-2 py-1 rounded self-start ${bill.paid ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>

@@ -29,13 +29,14 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
   };
 
   return (
-    <div className="card compact-mobile">
+    <div className="glass-card p-4 sm:p-6 animate-fade-in animate-stagger-1">
+
       <h2 className="section-title mb-6">Invoice Details</h2>
 
       {/* Brand Selection */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6 items-end">
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-1">Brand</label>
+          <label className="block text-sm font-medium mb-1 text-slate-300">Brand</label>
           <select
             className="input-field w-full"
             value={invoiceData.brandKey || ''}
@@ -54,20 +55,21 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
             }}
           >
             {BRANDS.map(b => (
-              <option key={b.key} value={b.key}>{b.name}</option>
+              <option key={b.key} value={b.key} className="bg-slate-900">{b.name}</option>
             ))}
           </select>
         </div>
         {invoiceData.companyLogo && (
           <div className="flex justify-start md:justify-end">
             {/* Preview of selected brand logo */}
-            <img src={invoiceData.companyLogo} alt="brand" className="h-12 object-contain drop-shadow-sm" />
+            <img src={invoiceData.companyLogo} alt="brand" className="h-12 object-contain drop-shadow-md rounded-lg bg-white/5 p-1" />
           </div>
         )}
       </div>
 
       {/* Client Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6">
+      <h3 className="section-title text-base mb-3 text-slate-300">Client Details</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-6">
         <input
           type="text"
           name="clientName"
@@ -105,23 +107,24 @@ const InvoiceForm = ({ invoiceData, setInvoiceData }) => {
           value={invoiceData.invoiceNumber}
           onChange={handleInputChange}
           placeholder="Invoice Number"
-          className="input-field"
+          className="input-field md:col-span-2"
         />
       </div>
 
       {/* Items Table */}
-      <div className="mb-4 md:mb-6">
-        <h3 className="section-title mb-4">Invoice Items</h3>
-        <table className="w-full text-xs md:text-sm">
+      <div className="mb-4 md:mb-6 overflow-x-auto">
+        <h3 className="section-title text-base mb-3 text-slate-300">Invoice Items</h3>
+        <table className="custom-table">
           <thead>
             <tr>
               <th className="text-left">Description</th>
-              <th className="text-left w-20">Quantity</th>
+              <th className="text-left w-20">Qty</th>
               <th className="text-left w-24">List Price</th>
               <th className="text-left w-24">Coil Price</th>
               <th></th>
             </tr>
           </thead>
+
           <tbody>
             {invoiceData.items.map((item, index) => (
               <tr key={index}>

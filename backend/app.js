@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const supabaseService = require('./services/supabaseService');
+const dbService = require('./services/dbService');
 
 const app = express();
 
@@ -14,8 +14,9 @@ app.use(
 );
 app.use(express.json());
 
-// Initialize Supabase connection on cold start
-supabaseService.initializeSupabase();
+// Initialize Database connection on cold start
+dbService.connect();
+
 
 // Routes
 const authRoutes = require('./routes/auth');

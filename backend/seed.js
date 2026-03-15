@@ -1,8 +1,8 @@
-const supabaseService = require('./services/supabaseService');
+const dbService = require('./services/dbService');
 require('dotenv').config();
 
 // Initialize Supabase service
-supabaseService.initializeSupabase();
+dbService.initializeSupabase();
 
 // Sample brands data
 const brandsData = [
@@ -97,7 +97,7 @@ const seedDatabase = async () => {
     // Wait for Supabase to initialize
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // Clear existing data (we'll need to implement this in supabaseService)
+    // Clear existing data (we'll need to implement this in dbService)
     console.log('Clearing existing data...');
     
     // Insert brands
@@ -105,7 +105,7 @@ const seedDatabase = async () => {
     const insertedBrands = [];
     for (const brandData of brandsData) {
       try {
-        const brand = await supabaseService.createBrand(brandData);
+        const brand = await dbService.createBrand(brandData);
         insertedBrands.push(brand);
         console.log(`Inserted brand: ${brand.name}`);
       } catch (error) {
@@ -121,7 +121,7 @@ const seedDatabase = async () => {
     for (const brand of insertedBrands) {
       for (const productData of productsData) {
         try {
-          await supabaseService.createProduct({
+          await dbService.createProduct({
             brand_id: brand.id,
             description: productData.description,
             list_price: productData.listPrice,
