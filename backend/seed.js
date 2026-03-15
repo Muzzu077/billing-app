@@ -1,8 +1,8 @@
 const dbService = require('./services/dbService');
 require('dotenv').config();
 
-// Initialize Supabase service
-dbService.initializeSupabase();
+// Initialize database connection
+dbService.connect();
 
 // Sample brands data
 const brandsData = [
