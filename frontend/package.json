@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "cross-env ROLLUP_USE_NODE_JS_IMPLEMENTATION=true vite build",
+    "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -34,10 +34,5 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.46.2"
-  },
-  "overrides": {
-    "vite": {
-      "rollup": "npm:@rollup/wasm-node@4.46.2"
-    }
   }
 }
