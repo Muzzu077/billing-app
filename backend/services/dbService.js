@@ -17,7 +17,9 @@ class DBService {
 
       this.pool = new Pool({
         connectionString: connectionString,
-        ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false }
+        ssl: connectionString.includes('localhost') ? false : { rejectUnauthorized: false },
+        connectionTimeoutMillis: 10000,
+        max: 5,
       });
 
 

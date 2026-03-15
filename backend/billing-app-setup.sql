@@ -1,8 +1,7 @@
 -- =====================================================
--- COMPLETE SUPABASE SETUP FOR BILLING APP
+-- COMPLETE DATABASE SETUP FOR BILLING APP
 -- =====================================================
--- Run this entire script inside the Supabase SQL editor.
--- It replaces every MongoDB artifact with a Supabase-native schema.
+-- Run this script against your PostgreSQL database (Neon, local, etc).
 
 -- =====================================================
 -- 1. TABLES
